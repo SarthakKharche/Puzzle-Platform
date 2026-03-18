@@ -1,0 +1,18 @@
+{
+  "name": "puzzle-platform-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$conn = Get-NetTCPConnection -LocalPort 4000 -State Listen -ErrorAction SilentlyContinue; if ($conn) { $portPid = ($conn | Select-Object -First 1).OwningProcess; if ($portPid) { Stop-Process -Id $portPid -Force -ErrorAction SilentlyContinue } }\"",
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.8.1"
+  }
+}

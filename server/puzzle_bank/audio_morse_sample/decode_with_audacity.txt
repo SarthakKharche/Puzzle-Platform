@@ -1,0 +1,1 @@
+Open morse_HELP.wav in Audacity. Use Zoom tool to zoom horizontally. Short pulses are dots, long pulses are dashes. Use Selection toolbar to read durations.

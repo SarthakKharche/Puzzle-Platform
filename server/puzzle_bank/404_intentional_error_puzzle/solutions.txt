@@ -1,0 +1,21 @@
+Solutions (organizer reference)
+
+Working files:
+- index.html contains a working link to pages/info.html and an existing image images/logo.png.
+
+Example single-line edits participants could make (one of many possibilities):
+1) Change image src:
+   <img src="images/logo.png" ...>
+   -> <img src="images/missing.png" ...>
+   Then reload, right-click broken image -> Open in new tab -> browser shows 404 page (Clue: 404).
+
+2) Change link href:
+   <a href="pages/info.html">Info Page</a>
+   -> <a href="pages/missing.html">Info Page</a>
+   Click the link -> you are taken to http://localhost:8000/pages/missing.html which returns 404 page (Clue: 404).
+
+3) Introduce error in a script tag (if present) to fetch a missing resource; open Network tab to see 404.
+
+Organizer tip:
+- Make sure participants run the provided run_server.py (or a server that returns HTTP codes) — opening index.html over file:// will not produce HTTP 404.
+- If you want the HTTP status code only (no page body), you can remove the custom 404 body; participants can then view the Network tab to read the status code.

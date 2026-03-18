@@ -1,0 +1,21 @@
+{
+  "alphabet": "A-Z around the dial, A at 12 o'clock, clockwise",
+  "pairs": [
+    {
+      "dial": 1,
+      "hour": "P",
+      "minute": "U"
+    },
+    {
+      "dial": 2,
+      "hour": "Z",
+      "minute": "Z"
+    },
+    {
+      "dial": 3,
+      "hour": "L",
+      "minute": "E"
+    }
+  ],
+  "final_word": "PUZZLE"
+}

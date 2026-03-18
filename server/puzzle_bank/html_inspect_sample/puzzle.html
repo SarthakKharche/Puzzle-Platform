@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Inspect Elements Puzzle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #e0eafc, #cfdef3);
+      padding: 40px;
+    }
+    .card {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .hint {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+    /* Hidden CSS clue */
+    .secret::after {
+      content: "Look deeper into the source... /* Clue: The bird rises */";
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>HTML Inspect Elements Puzzle</h1>
+    <p class="hint">There's more to this page than meets the eye.</p>
+    <p class="hint">Try looking beyond what is visible. Inspect the elements!</p>
+    <!-- Hidden clue starts here -->
+    <!-- The final key is in the format HIDDENKEY: PHOENIX -->
+    <!-- Another hint: The mythical bird that rises from ashes -->
+    <!-- Hidden clue ends here -->
+    <div style="display:none">Secret Div: HIDDENKEY: PHOENIX</div>
+  </div>
+</body>
+</html>
