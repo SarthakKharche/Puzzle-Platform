@@ -38,6 +38,8 @@ if (process.env.NODE_ENV !== "production") {
 redisClient.on("connect", () => console.log("[Redis] Connected"));
 redisClient.on("error", (err) => console.error("[Redis] Error:", err));
 
+redisSub.on("error", (err) => console.error("[RedisSub] Error:", err));
+redisSub.on("end", () => console.warn("[RedisSub] Connection ended"));
 // Application shutdown helper: close both command and subscription sockets.
 export async function disconnectRedis() {
   redisClient.disconnect();
