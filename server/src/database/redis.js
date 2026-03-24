@@ -41,7 +41,34 @@ redisClient.on("error", (err) => console.error("[Redis] Error:", err));
 redisSub.on("error", (err) => console.error("[RedisSub] Error:", err));
 redisSub.on("end", () => console.warn("[RedisSub] Connection ended"));
 // Application shutdown helper: close both command and subscription sockets.
+async function safeQuit(client, label) {
+  if (!client) return;
+  const QUIT_TIMEOUT_MS = 5000;
+
+  try {
+    await Promise.race([
+      client.quit(),
+      new Promise((_, reject) => {
+        setTimeout(
+          () =>
+            reject(
+              new Error(
+                `[Redis] ${label} quit() timeout after ${QUIT_TIMEOUT_MS}ms`
+              )
+            ),
+          QUIT_TIMEOUTMS
+        );
+      })
+    ]);
+  } catch (err) {
+    console.error(`[Redis] Error during ${label} quit():`, err);
+    client.disconnect();
+  }
+}
+
 export async function disconnectRedis() {
-  redisClient.disconnect();
-  redisSub.disconnect();
+  await Promise.all([
+    safeQuit(redisClient, "client"),
+    safeQuit(redisSub, "subscriber")
+  ]);
 }
