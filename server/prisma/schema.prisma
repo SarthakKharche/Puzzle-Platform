@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id                  String   @id @default(uuid())
+  name                String
+  status              String   @default("pending")
+  starts_at           DateTime
+  ends_at             DateTime
+  lifeline_count      Int      @default(3)
+  lifeline_duration_s Int      @default(60)
+  puzzle_time_limit_s Int      @default(300)
+  max_violations      Int      @default(5)
+  settings            Json?
+  created_at          DateTime @default(now())
+
+  teams       Team[]
+  puzzles     Puzzle[]
+  assignments Assignment[]
+
+  @@index([status])
+  @@map("events")
+}
+
+model Team {
+  id              String   @id @default(uuid())
+  event_id        String
+  name            String
+  access_code     String   @unique
+  password_hash   String
+  score           Int      @default(0)
+  rank            Int      @default(0)
+  violation_count Int      @default(0)
+  is_locked       Boolean  @default(false)
+  is_admin        Boolean  @default(false)
+  created_at      DateTime @default(now())
+
+  event       Event          @relation(fields: [event_id], references: [id])
+  members     TeamMember[]
+  assignments Assignment[]
+  submissions Submission[]
+  lifeline    Lifeline?
+  violations  Violation[]
+  sessions    Session[]
+
+  @@index([event_id])
+  @@index([score])
+  @@index([access_code])
+  @@map("teams")
+}
+
+model TeamMember {
+  id      String @id @default(uuid())
+  team_id String
+  name    String
+  role    String @default("member")
+
+  team Team @relation(fields: [team_id], references: [id], onDelete: Cascade)
+
+  @@index([team_id])
+  @@map("team_members")
+}
+
+model Puzzle {
+  id                 String  @id @default(uuid())
+  event_id           String
+  external_code      String? @unique
+  title              String
+  category           String
+  difficulty         Int     @default(1)
+  question           String
+  answer_hash        String
+  hint               String?
+  points             Int     @default(100)
+  is_active          Boolean @default(true)
+  submission_mode    String  @default("text")
+  validation_mode    String  @default("content")
+  expected_file_name String?
+  expected_output    String?
+  source_folder      String?
+  source_root        String?
+  asset_files        Json?
+
+  event       Event          @relation(fields: [event_id], references: [id])
+  assignments Assignment[]
+  submissions Submission[]
+
+  @@index([event_id])
+  @@index([category])
+  @@index([is_active])
+  @@map("puzzles")
+}
+
+model Assignment {
+  id            String   @id @default(uuid())
+  team_id       String
+  puzzle_id     String
+  event_id      String
+  status        String   @default("active")
+  assigned_at   DateTime @default(now())
+  started_at    DateTime @default(now())
+  expires_at    DateTime
+  completed_at  DateTime?
+  skipped_at    DateTime?
+  time_limit_s  Int      @default(300)
+
+  team        Team         @relation(fields: [team_id], references: [id])
+  puzzle      Puzzle       @relation(fields: [puzzle_id], references: [id])
+  event       Event        @relation(fields: [event_id], references: [id])
+  submissions Submission[]
+
+  @@index([team_id, status])
+  @@index([expires_at])
+  @@index([event_id, status])
+  @@map("assignments")
+}
+
+model Submission {
+  id             String   @id @default(uuid())
+  team_id        String
+  puzzle_id      String
+  assignment_id  String
+  answer_raw     String
+  is_correct     Boolean
+  attempt_number Int
+  submitted_at   DateTime @default(now())
+
+  team       Team       @relation(fields: [team_id], references: [id])
+  puzzle     Puzzle     @relation(fields: [puzzle_id], references: [id])
+  assignment Assignment @relation(fields: [assignment_id], references: [id])
+
+  @@index([team_id, puzzle_id])
+  @@index([assignment_id])
+  @@index([submitted_at])
+  @@map("submissions")
+}
+
+model Lifeline {
+  id             String    @id @default(uuid())
+  team_id        String    @unique
+  event_id       String
+  uses_remaining Int
+  unlocked_at    DateTime?
+  lock_at        DateTime?
+  is_active      Boolean   @default(false)
+
+  team Team @relation(fields: [team_id], references: [id])
+
+  @@index([is_active])
+  @@map("lifelines")
+}
+
+model Violation {
+  id              String   @id @default(uuid())
+  team_id         String
+  type            String
+  detail          String?
+  penalty_applied Int      @default(0)
+  occurred_at     DateTime @default(now())
+
+  team Team @relation(fields: [team_id], references: [id])
+
+  @@index([team_id, occurred_at])
+  @@index([type])
+  @@map("violations")
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  team_id    String
+  token_hash String   @unique
+  ip_address String?
+  created_at DateTime @default(now())
+  expires_at DateTime
+  is_revoked Boolean  @default(false)
+
+  team Team @relation(fields: [team_id], references: [id])
+
+  @@index([token_hash])
+  @@index([team_id, is_revoked])
+  @@index([expires_at])
+  @@map("sessions")
+}

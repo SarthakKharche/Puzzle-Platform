@@ -8,5 +8,8 @@
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix client run build",
     "start": "npm --prefix server run start"
+  },
+  "devDependencies": {
+    "@ljharb/tsconfig": "^0.3.2"
   }
 }
