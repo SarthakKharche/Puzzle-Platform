@@ -11,6 +11,7 @@ import { getDashboardSnapshot } from "./services/dashboardService.js";
 import { normalizeAssignments } from "./services/puzzleService.js";
 import { getDefaultPuzzleBankDir, syncPuzzlesFromFolder } from "./services/puzzleBankService.js";
 import { loadQuestionsAsPuzzles } from "./services/questionsService.js";
+import { initSocketBridge } from "./database/socketBridge.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -19,6 +20,8 @@ const io = new Server(httpServer, {
     origin: "*"
   }
 });
+
+initSocketBridge(io);
 
 const store = new DataStore();
 store.init();
